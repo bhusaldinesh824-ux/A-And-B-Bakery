@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Bakery - Sunwal, Parasi Road, Under NIC Asia Bank | Fresh Cakes, Donuts & More</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+        }
+
+        .header {
+            background: #d63031;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .shop-info {
+            background: #00b894;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #d63031;
+        }
+
+        .product h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2d3436;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00b894;
+            margin-bottom: 1rem;
+        }
+
+        .buy-now-btn {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .buy-now-btn:hover {
+            background: #00a085;
+            transform: scale(1.05);
+        }
+
+        /* Order Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00b894;
+        }
+
+        .order-btn {
+            background: #d63031;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .order-btn:hover {
+            background: #ca2e2e;
+        }
+
+        .order-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            background: #00b894;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .footer {
+            background: #2d3436;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🍰 ABC Bakery 🍩</h1>
+        <p>Freshly Baked Happiness Everyday!</p>
+    </header>
+
+    <div class="shop-info">
+        📍 Sunwal 1, Nawalparasi, Nepal | 🕒 Open 9AM - 7PM (Everyday) | 📞 9867486495
+    </div>
+
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: #2d3436;">Our Delicious Products</h2>
+        
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">🍰</div>
+                <div class="product">
+                    <h3>Chocolate Cake</h3>
+                    <div class="price">NPR 850</div>
+                    <button class="buy-now-btn" onclick="openOrderModal('Chocolate Cake', 850)">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🍩</div>
+                <div class="product">
+                    <h3>Glazed Donuts (6 pcs)</h3>
+                    <div class="price">NPR 250</div>
+                    <button class="buy-now-btn" onclick="openOrderModal('Glazed Donuts (6 pcs)', 250)">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🍪</div>
+                <div class="product">
+                    <h3>Chocolate Chip Cookies (12 pcs)</h3>
+                    <div class="price">NPR 180</div>
+                    <button class="buy-now-btn" onclick="openOrderModal('Chocolate Chip Cookies (12 pcs)', 180)">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🎂</div>
+                <div class="product">
+                    <h3>Vanilla Birthday Cake</h3>
+                    <div class="price">NPR 1200</div>
+                    <button class="buy-now-btn" onclick="openOrderModal('Vanilla Birthday Cake', 1200)">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🧁</div>
+                <div class="product">
+                    <h3>Red Velvet Cupcakes (6 pcs)</h3>
+                    <div class="price">NPR 350</div>
+                    <button class="buy-now-btn" onclick="openOrderModal('Red Velvet Cupcakes (6 pcs)', 350)">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🥖</div>
+                <div class="product">
+                    <h3>Fresh Bread Loaf</h3>
+                    <div class="price">NPR 80</div>
+                    <button class="buy-now-btn" onclick="openOrderModal('Fresh Bread Loaf', 80)">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2 style="color: #d63031; margin-bottom: 1.5rem;">📋 Place Your Order</h2>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>Product Name:</label>
+                    <input type="text" id="productName" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Price:</label>
+                    <input type="text" id="productPrice" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity:</label>
+                    <input type="number" id="quantity" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name:</label>
+                    <input type="text" id="customerName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number:</label>
+                    <input type="tel" id="phoneNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery Address:</label>
+                    <input type="text" id="deliveryAddress" placeholder="House no., Street, Sunwal/Nawalparasi" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Preferred Delivery Date:</label>
+                    <input type="date" id="deliveryDate" required>
+                </div>
+
+                <button type="submit" class="order-btn">Send Order to WhatsApp 🚀</button>
+            </form>
+
+            <div id="successMessage" class="success-message">
+                ✅ Order sent successfully! We will contact you soon on WhatsApp.
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 ABC Bakery - Sunwal, Nawalparasi | Freshly Baked with ❤️ Everyday</p>
+        <p>📞 WhatsApp Orders: <a href="https://wa.me/9779867486495" style="color: #00b894;">+977 9867486495</a></p>
+    </footer>
+
+    <script>
+        let currentProductName = '';
+        let currentProductPrice = 0;
+
+        function openOrderModal(productName, price) {
+            currentProductName = productName;
+            currentProductPrice = price;
+            document.getElementById('productName').value = productName;
+            document.getElementById('productPrice').value = 'NPR ' + price;
+            document.getElementById('quantity').value = 1;
+            document.getElementById('orderModal').style.display = 'block';
+            document.getElementById('deliveryDate').valueAsDate = new Date();
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('orderForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModal');
+            if (event.target == modal) {
+                closeOrderModal();
+            }
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const quantity = document.getElementById('quantity').value;
+            const customerName = document.getElementById('customerName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const deliveryAddress = document.getElementById('deliveryAddress').value;
+            const deliveryDate = document.getElementById('deliveryDate').value;
+
+            const totalAmount = (currentProductPrice * quantity).toLocaleString();
+            
+            const message = `🍰 *NEW ORDER FROM ABC BAKERY WEBSITE* 🍰
+
+👤 *Customer:* ${customerName}
+📱 *Phone:* ${phoneNumber}
+📦 *Product:* ${currentProductName}
+📊 *Quantity:* ${quantity}
+💰 *Total Amount:* NPR ${totalAmount}
+📍 *Delivery Address:* ${deliveryAddress}
+📅 *Delivery Date:* ${deliveryDate}
+
+*Shop Location:* Sunwal 1, Nawalparasi
+⏰ *Open:* 9AM - 7PM Everyday
+
+Please confirm the order! 🙏`;
+
+            const whatsappNumber = '9779867486495'; // Nepal country code + your number
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+            // Show success message and open WhatsApp
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(() => {
+                window.open(whatsappURL, '_blank');
+                closeOrderModal();
+            }, 1500);
+        });
+
+        // Set minimum date to today
+        document.getElementById('deliveryDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
